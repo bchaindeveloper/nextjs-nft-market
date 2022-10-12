@@ -4,6 +4,22 @@ import nftMarketplaceAbi from "../constants/NftMarketplace.json"
 import nftAbi from "../constants/BasicNft.json"
 import Image from "next/image"
 import {Card} from "web3uikit"
+import UpdateListingModal from "./UpdateListingModal"
+
+const truncateStr = (fullStr, strLen) => {
+    if (fullStr.length <= strLen) return fullStr
+
+    const separator = "..."
+    const seperatorLength = separator.length
+    const charsToShow = strLen - seperatorLength
+    const frontChars = Math.ceil(charsToShow / 2)
+    const backChars = Math.floor(charsToShow / 2)
+    return (
+        fullStr.substring(0, frontChars) +
+        separator +
+        fullStr.substring(fullStr.length - backChars)
+    )
+}
 
 
 export default function NfTBox({price, nftAddress, tokenId, marketplaceAddress, seller}) {
@@ -39,7 +55,8 @@ export default function NfTBox({price, nftAddress, tokenId, marketplaceAddress, 
         updateUI()}
     }, [isWeb3Enabled])
     const isOwnedByUser = seller === account || seller === undefined
-    const formattedSellerAddress = isOwnedByUser ? "you" : seller
+    const formattedSellerAddress = isOwnedByUser ? "you" : truncateStr(seller || "", 15)
+
 
     return (
         <div>
