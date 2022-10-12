@@ -57,6 +57,24 @@ export default function NfTBox({price, nftAddress, tokenId, marketplaceAddress, 
     const isOwnedByUser = seller === account || seller === undefined
     const formattedSellerAddress = isOwnedByUser ? "you" : truncateStr(seller || "", 15)
 
+    const handleCardClick = () => {
+        isOwnedByUser
+            ? setShowModal(true)
+            : buyItem({
+                  onError: (error) => console.log(error),
+                  onSuccess: handleBuyItemSuccess,
+              })
+    }
+
+    const handleBuyItemSuccess = async (tx) => {
+        await tx.wait(1)
+        dispatch({
+            type: "success",
+            message: "Item bought!",
+            title: "Item Bought",
+            position: "topR",
+        })
+    }
 
     return (
         <div>
