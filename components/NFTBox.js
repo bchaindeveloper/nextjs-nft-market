@@ -23,17 +23,32 @@ const truncateStr = (fullStr, strLen) => {
 
 
 export default function NfTBox({price, nftAddress, tokenId, marketplaceAddress, seller}) {
-    const {isWeb3Enabled, account} = useMoralis()
+    const { isWeb3Enabled, account } = useMoralis()
     const [imageURI, setImageURI] = useState("")
     const [tokenName, setTokenName] = useState("")
     const [tokenDescription, setTokenDescription] = useState("")
+    const [showModal, setShowModal] = useState(false)
+    const hideModal = () => setShowModal(false)
+    const dispatch = useNotification()
 
-    const {runContractFunction: getTokenURI} = useWeb3Contract({
+    const { runContractFunction: getTokenURI } = useWeb3Contract({
         abi: nftAbi,
         contractAddress: nftAddress,
         functionName: "tokenURI",
-        params: {tokenId: tokenId,}
+        params: {
+            tokenId: tokenId,
+        },
+    })
 
+    const { runContractFunction: buyItem } = useWeb3Contract({
+        abi: nftMarketplaceAbi,
+        contractAddress: marketplaceAddress,
+        functionName: "buyItem",
+        msgValue: price,
+        params: {
+            nftAddress: nftAddress,
+            tokenId: tokenId,
+        },
     })
 
     async function updateUI() {
